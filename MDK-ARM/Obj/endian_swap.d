@@ -1,0 +1,9 @@
+.\obj\endian_swap.o: ..\USER\src\endian_swap.c
+.\obj\endian_swap.o: ..\USER\src\endian_swap.h
+.\obj\endian_swap.o: ..\Platform\midlayer\include\baseType.h
+.\obj\endian_swap.o: D:\ADS_Win10\INCLUDE\stdlib.h
+.\obj\endian_swap.o: D:\ADS_Win10\INCLUDE\string.h
+.\obj\endian_swap.o: D:\ADS_Win10\INCLUDE\stdio.h
+.\obj\endian_swap.o: ..\Platform\midlayer\include\assert.h
+.\obj\endian_swap.o: ..\Platform\midlayer\include\debug.h
+.\obj\endian_swap.o: ..\Platform\midlayer\include\baseType.h

@@ -1,0 +1,9 @@
+.\obj\queue.o: ..\Platform\midlayer\src\queue.c
+.\obj\queue.o: ..\Platform\midlayer\include\queue.h
+.\obj\queue.o: ..\Platform\midlayer\include\baseType.h
+.\obj\queue.o: D:\ADS_Win10\INCLUDE\stdlib.h
+.\obj\queue.o: D:\ADS_Win10\INCLUDE\string.h
+.\obj\queue.o: D:\ADS_Win10\INCLUDE\stdio.h
+.\obj\queue.o: ..\Platform\midlayer\include\assert.h
+.\obj\queue.o: ..\Platform\midlayer\include\debug.h
+.\obj\queue.o: ..\Platform\midlayer\include\baseType.h

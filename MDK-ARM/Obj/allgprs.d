@@ -1,0 +1,17 @@
+.\obj\allgprs.o: ..\USER\src\allGprs.c
+.\obj\allgprs.o: ..\USER\include\apll.h
+.\obj\allgprs.o: ..\Platform\midlayer\include\baseType.h
+.\obj\allgprs.o: D:\ADS_Win10\INCLUDE\stdlib.h
+.\obj\allgprs.o: D:\ADS_Win10\INCLUDE\string.h
+.\obj\allgprs.o: D:\ADS_Win10\INCLUDE\stdio.h
+.\obj\allgprs.o: ..\Platform\midlayer\include\assert.h
+.\obj\allgprs.o: ..\Platform\midlayer\include\debug.h
+.\obj\allgprs.o: ..\Platform\midlayer\include\baseType.h
+.\obj\allgprs.o: ..\USER\src\global.h
+.\obj\allgprs.o: ..\Platform\midlayer\include\timer.h
+.\obj\allgprs.o: ..\Platform\midlayer\include\list.h
+.\obj\allgprs.o: ..\Platform\midlayer\include\ioctrl.h
+.\obj\allgprs.o: ..\USER\src\allGprs.h
+.\obj\allgprs.o: ..\Platform\midlayer\include\driverManager.h
+.\obj\allgprs.o: ..\USER\src\cJSON.h
+.\obj\allgprs.o: D:\ADS_Win10\INCLUDE\stddef.h

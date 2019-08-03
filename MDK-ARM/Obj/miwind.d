@@ -1,0 +1,13 @@
+.\obj\miwind.o: ..\USER\MiWind.c
+.\obj\miwind.o: ..\USER\user_uart.h
+.\obj\miwind.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_usart.h
+.\obj\miwind.o: ..\Libraries\CMSIS\CM3\DeviceSupport\ST\STM32F10x\stm32f10x.h
+.\obj\miwind.o: ..\Libraries\CMSIS\CM3\CoreSupport\core_cm3.h
+.\obj\miwind.o: D:\ADS_Win10\INCLUDE\stdint.h
+.\obj\miwind.o: ..\Libraries\CMSIS\CM3\DeviceSupport\ST\STM32F10x\system_stm32f10x.h
+.\obj\miwind.o: ..\USER\stm32f10x_conf.h
+.\obj\miwind.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_gpio.h
+.\obj\miwind.o: ..\Libraries\CMSIS\CM3\DeviceSupport\ST\STM32F10x\stm32f10x.h
+.\obj\miwind.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_rcc.h
+.\obj\miwind.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\misc.h
+.\obj\miwind.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dma.h

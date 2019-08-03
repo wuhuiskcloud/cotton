@@ -1,0 +1,9 @@
+.\obj\driverrtc.o: ..\Platform\midlayer\src\driverRtc.c
+.\obj\driverrtc.o: ..\Platform\midlayer\include\driverRtc.h
+.\obj\driverrtc.o: ..\Platform\midlayer\include\baseType.h
+.\obj\driverrtc.o: D:\ADS_Win10\INCLUDE\stdlib.h
+.\obj\driverrtc.o: D:\ADS_Win10\INCLUDE\string.h
+.\obj\driverrtc.o: D:\ADS_Win10\INCLUDE\stdio.h
+.\obj\driverrtc.o: ..\Platform\midlayer\include\assert.h
+.\obj\driverrtc.o: ..\Platform\midlayer\include\debug.h
+.\obj\driverrtc.o: ..\Platform\midlayer\include\baseType.h

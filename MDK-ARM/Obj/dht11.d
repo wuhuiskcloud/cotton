@@ -1,0 +1,13 @@
+.\obj\dht11.o: ..\USER\DHT11.c
+.\obj\dht11.o: ..\USER\DHT11.h
+.\obj\dht11.o: ..\Libraries\CMSIS\CM3\DeviceSupport\ST\STM32F10x\stm32f10x.h
+.\obj\dht11.o: ..\Libraries\CMSIS\CM3\CoreSupport\core_cm3.h
+.\obj\dht11.o: D:\ADS_Win10\INCLUDE\stdint.h
+.\obj\dht11.o: ..\Libraries\CMSIS\CM3\DeviceSupport\ST\STM32F10x\system_stm32f10x.h
+.\obj\dht11.o: ..\USER\stm32f10x_conf.h
+.\obj\dht11.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_gpio.h
+.\obj\dht11.o: ..\Libraries\CMSIS\CM3\DeviceSupport\ST\STM32F10x\stm32f10x.h
+.\obj\dht11.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_rcc.h
+.\obj\dht11.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\misc.h
+.\obj\dht11.o: ..\USER\GPIOLIKE51.h
+.\obj\dht11.o: ..\USER\delay.h

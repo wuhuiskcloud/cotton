@@ -1,0 +1,11 @@
+.\obj\sheet.o: ..\Platform\midlayer\src\sheet.c
+.\obj\sheet.o: ..\Platform\midlayer\include\sheet.h
+.\obj\sheet.o: ..\Platform\midlayer\include\baseType.h
+.\obj\sheet.o: D:\ADS_Win10\INCLUDE\stdlib.h
+.\obj\sheet.o: D:\ADS_Win10\INCLUDE\string.h
+.\obj\sheet.o: D:\ADS_Win10\INCLUDE\stdio.h
+.\obj\sheet.o: ..\Platform\midlayer\include\assert.h
+.\obj\sheet.o: ..\Platform\midlayer\include\debug.h
+.\obj\sheet.o: ..\Platform\midlayer\include\baseType.h
+.\obj\sheet.o: ..\Platform\driver\include\driverFlash.h
+.\obj\sheet.o: ..\Platform\midlayer\include\driverManager.h

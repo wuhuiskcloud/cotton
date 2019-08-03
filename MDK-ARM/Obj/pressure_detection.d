@@ -1,0 +1,13 @@
+.\obj\pressure_detection.o: ..\USER\pressure_detection.c
+.\obj\pressure_detection.o: ..\USER\pressure_detection.h
+.\obj\pressure_detection.o: ..\Libraries\CMSIS\CM3\DeviceSupport\ST\STM32F10x\stm32f10x.h
+.\obj\pressure_detection.o: ..\Libraries\CMSIS\CM3\CoreSupport\core_cm3.h
+.\obj\pressure_detection.o: D:\ADS_Win10\INCLUDE\stdint.h
+.\obj\pressure_detection.o: ..\Libraries\CMSIS\CM3\DeviceSupport\ST\STM32F10x\system_stm32f10x.h
+.\obj\pressure_detection.o: ..\USER\stm32f10x_conf.h
+.\obj\pressure_detection.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_gpio.h
+.\obj\pressure_detection.o: ..\Libraries\CMSIS\CM3\DeviceSupport\ST\STM32F10x\stm32f10x.h
+.\obj\pressure_detection.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_rcc.h
+.\obj\pressure_detection.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\misc.h
+.\obj\pressure_detection.o: ..\USER\GPIOLIKE51.h
+.\obj\pressure_detection.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_adc.h

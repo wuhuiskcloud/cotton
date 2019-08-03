@@ -1,0 +1,9 @@
+.\obj\driverfile.o: ..\Platform\midlayer\src\driverFile.c
+.\obj\driverfile.o: ..\Platform\midlayer\include\driverFile.h
+.\obj\driverfile.o: ..\Platform\midlayer\include\baseType.h
+.\obj\driverfile.o: D:\ADS_Win10\INCLUDE\stdlib.h
+.\obj\driverfile.o: D:\ADS_Win10\INCLUDE\string.h
+.\obj\driverfile.o: D:\ADS_Win10\INCLUDE\stdio.h
+.\obj\driverfile.o: ..\Platform\midlayer\include\assert.h
+.\obj\driverfile.o: ..\Platform\midlayer\include\debug.h
+.\obj\driverfile.o: ..\Platform\midlayer\include\baseType.h

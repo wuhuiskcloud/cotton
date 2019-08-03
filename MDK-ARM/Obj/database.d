@@ -1,0 +1,10 @@
+.\obj\database.o: ..\USER\src\dataBase.c
+.\obj\database.o: ..\USER\src\dataBase.h
+.\obj\database.o: ..\Platform\midlayer\include\baseType.h
+.\obj\database.o: D:\ADS_Win10\INCLUDE\stdlib.h
+.\obj\database.o: D:\ADS_Win10\INCLUDE\string.h
+.\obj\database.o: D:\ADS_Win10\INCLUDE\stdio.h
+.\obj\database.o: ..\Platform\midlayer\include\assert.h
+.\obj\database.o: ..\Platform\midlayer\include\debug.h
+.\obj\database.o: ..\Platform\midlayer\include\baseType.h
+.\obj\database.o: ..\Platform\midlayer\include\sheet.h

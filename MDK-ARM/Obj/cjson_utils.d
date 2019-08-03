@@ -1,0 +1,9 @@
+.\obj\cjson_utils.o: ..\USER\src\cJSON_Utils.c
+.\obj\cjson_utils.o: D:\ADS_Win10\INCLUDE\ctype.h
+.\obj\cjson_utils.o: D:\ADS_Win10\INCLUDE\string.h
+.\obj\cjson_utils.o: D:\ADS_Win10\INCLUDE\stdlib.h
+.\obj\cjson_utils.o: D:\ADS_Win10\INCLUDE\stdio.h
+.\obj\cjson_utils.o: D:\ADS_Win10\INCLUDE\limits.h
+.\obj\cjson_utils.o: ..\USER\src\cJSON_Utils.h
+.\obj\cjson_utils.o: ..\USER\src\cJSON.h
+.\obj\cjson_utils.o: D:\ADS_Win10\INCLUDE\stddef.h

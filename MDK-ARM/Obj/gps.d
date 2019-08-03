@@ -1,0 +1,15 @@
+.\obj\gps.o: ..\USER\GPS.c
+.\obj\gps.o: ..\USER\GPS.h
+.\obj\gps.o: ..\Libraries\CMSIS\CM3\DeviceSupport\ST\STM32F10x\stm32f10x.h
+.\obj\gps.o: ..\Libraries\CMSIS\CM3\CoreSupport\core_cm3.h
+.\obj\gps.o: D:\ADS_Win10\INCLUDE\stdint.h
+.\obj\gps.o: ..\Libraries\CMSIS\CM3\DeviceSupport\ST\STM32F10x\system_stm32f10x.h
+.\obj\gps.o: ..\USER\stm32f10x_conf.h
+.\obj\gps.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_gpio.h
+.\obj\gps.o: ..\Libraries\CMSIS\CM3\DeviceSupport\ST\STM32F10x\stm32f10x.h
+.\obj\gps.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_rcc.h
+.\obj\gps.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\misc.h
+.\obj\gps.o: ..\USER\GPIOLIKE51.h
+.\obj\gps.o: ..\USER\user_uart.h
+.\obj\gps.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_usart.h
+.\obj\gps.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dma.h

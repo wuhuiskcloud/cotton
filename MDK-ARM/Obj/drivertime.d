@@ -1,0 +1,9 @@
+.\obj\drivertime.o: ..\Platform\midlayer\src\driverTime.c
+.\obj\drivertime.o: ..\Platform\midlayer\include\driverTime.h
+.\obj\drivertime.o: ..\Platform\midlayer\include\baseType.h
+.\obj\drivertime.o: D:\ADS_Win10\INCLUDE\stdlib.h
+.\obj\drivertime.o: D:\ADS_Win10\INCLUDE\string.h
+.\obj\drivertime.o: D:\ADS_Win10\INCLUDE\stdio.h
+.\obj\drivertime.o: ..\Platform\midlayer\include\assert.h
+.\obj\drivertime.o: ..\Platform\midlayer\include\debug.h
+.\obj\drivertime.o: ..\Platform\midlayer\include\baseType.h

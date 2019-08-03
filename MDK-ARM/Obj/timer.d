@@ -1,0 +1,11 @@
+.\obj\timer.o: ..\Platform\midlayer\src\timer.c
+.\obj\timer.o: ..\Platform\midlayer\include\driverManager.h
+.\obj\timer.o: ..\Platform\midlayer\include\baseType.h
+.\obj\timer.o: D:\ADS_Win10\INCLUDE\stdlib.h
+.\obj\timer.o: D:\ADS_Win10\INCLUDE\string.h
+.\obj\timer.o: D:\ADS_Win10\INCLUDE\stdio.h
+.\obj\timer.o: ..\Platform\midlayer\include\assert.h
+.\obj\timer.o: ..\Platform\midlayer\include\debug.h
+.\obj\timer.o: ..\Platform\midlayer\include\baseType.h
+.\obj\timer.o: ..\Platform\midlayer\include\timer.h
+.\obj\timer.o: ..\Platform\midlayer\include\list.h

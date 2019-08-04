@@ -22,7 +22,7 @@ static T_U8 GetCheckSum(unsigned char* buff_in, unsigned char length)
 	{
 		check_sum += buff_in[i];
 	}
-	ENDIAN_SWAP_Init();
+	
 	return check_sum;
 }
 
@@ -49,8 +49,6 @@ static T_S32 BleMeshPrasePacketHandle(T_U8 *pu8InBuf, T_U8 u8InBufLen, T_U8 *pu8
 	}
 	//¼ì²éÐ£Ñé×Ö
 	u8CheckCode = GetCheckSum(pu8InBuf, u8InBufLen-1);
-	
-	
 	if(u8CheckCode != pu8InBuf[u8InBufLen-1])
 	{
 		return RET_FAILED;

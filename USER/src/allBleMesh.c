@@ -22,7 +22,6 @@ static T_U8 GetCheckSum(unsigned char* buff_in, unsigned char length)
 	{
 		check_sum += buff_in[i];
 	}
-	
 	return check_sum;
 }
 
@@ -34,7 +33,7 @@ static T_VOID HeadPacket(T_U8 *pu8HeadPacket, T_U8 *pu8HeadLen)
 	*pu8HeadLen = 3;
 }
 
-static T_S32 BleMeshPrasePacketHandle(T_U8 *pu8InBuf, T_U8 u8InBufLen, T_U8 *pu8Cmd, T_U8 *pu8DataBuf, T_U8 *pu8DataLen)
+static T_S32 BleMeshPrasePacketHandle(T_U8 *pu8InBuf, T_U8 u8InBufLen, T_U8 *pu8Cmd, T_U8 *pu8DataBuf, T_U16 *pu16DataLen)
 {
 	T_U8 u8CheckCode = 0;
 	//检查头
@@ -49,6 +48,8 @@ static T_S32 BleMeshPrasePacketHandle(T_U8 *pu8InBuf, T_U8 u8InBufLen, T_U8 *pu8
 	}
 	//检查校验字
 	u8CheckCode = GetCheckSum(pu8InBuf, u8InBufLen-1);
+	
+	
 	if(u8CheckCode != pu8InBuf[u8InBufLen-1])
 	{
 		return RET_FAILED;
@@ -56,9 +57,9 @@ static T_S32 BleMeshPrasePacketHandle(T_U8 *pu8InBuf, T_U8 u8InBufLen, T_U8 *pu8
 
 	*pu8Cmd = pu8InBuf[3];
 	
-	*pu8DataLen = (pu8InBuf[4]<8)| pu8InBuf[5];
+	*pu16DataLen = (pu8InBuf[4]<<8)| pu8InBuf[5];
 
-	memcpy(pu8DataBuf, &pu8InBuf[6], *pu8DataLen);
+	memcpy(pu8DataBuf, &pu8InBuf[6], *pu16DataLen);
 	
 	return RET_SUCCESS;
 	
@@ -81,9 +82,12 @@ static T_VOID BleMeshAssemblePacketHandle(T_U8 u8Cmd, T_U8 *pu8InBuf, T_U16 u16I
 
 	u8ConutLen += 2;
 	
-	memcpy(&pu8OutBuf[u8ConutLen], pu8InBuf, u16InBufLen);
+	if(u16InBufLen > 0)
+	{
+		memcpy(&pu8OutBuf[u8ConutLen], pu8InBuf, u16InBufLen);
 
-	u8ConutLen += u16InBufLen;
+		u8ConutLen += u16InBufLen;
+	}
 	
 	u8CheckCode = GetCheckSum(pu8OutBuf, u8ConutLen);
 
@@ -95,14 +99,15 @@ static T_VOID BleMeshAssemblePacketHandle(T_U8 u8Cmd, T_U8 *pu8InBuf, T_U16 u16I
 
 }
 
-static T_S32 BleMeshNodeStatusReport(AllHandle *pstAllHandle, T_S8 *ps8Data, T_U8 u8Len)
+static T_S32 BleMeshNodeStatusReport(AllHandle *pstAllHandle, T_U8 *pu8Data, T_U8 u8Len)
 {
-	T_S8 s8MuId[24] = {0};
+	T_S8 s8MuId[24] = {0}, i=0;
 	cJSON *JasonData = T_NULL;
 	T_S8 s8DevSubId[3] = {0};
 	T_S8 *ps8JsonFormatData = T_NULL;
-	T_S8 s8RepData[128] = {0};
-	T_U8 u8GprsWorkMode = 0;	
+	T_S8 s8RepData[300] = {'\0'};
+	T_U8 u8GprsWorkMode = 0;
+	T_U8 u8TxLen=0;
 	
 	MDL_DRIVERMGR_Ioctl(pstAllHandle->s32GprsModuleId, GPS_GET_WORK_MODE, (T_VOID *)&u8GprsWorkMode);
 
@@ -111,50 +116,63 @@ static T_S32 BleMeshNodeStatusReport(AllHandle *pstAllHandle, T_S8 *ps8Data, T_U
 		return RET_FAILED;
 	}
 	
-	JasonData = cJSON_CreateObject();
-
-	if(JasonData == T_NULL)
-	{
-		return RET_FAILED;
-	}
-	
 	//memcpy(pstAllHandle->u8TmpSaveDevData, ps8Data, u8Len);
-	
-	cJSON_AddNumberToObject(JasonData, "type", TYPE_DEV);  //0:设备 1:网关
-	sprintf(s8DevSubId, "%d", ps8Data[0]);
-	strcpy(s8MuId, GTW_SN);
-	strcat(s8MuId, ":");
-	strcat(s8MuId, (const char *)s8DevSubId);
-	cJSON_AddStringToObject(JasonData, "muId", s8MuId);
-	
-	if(ps8Data[1] != 0)
+
+	for(i=0; i<u8Len; i += 4)
 	{
-		cJSON_AddNumberToObject(JasonData, "status", NODE_ON_LINE);
-	}else
-	{
-		cJSON_AddNumberToObject(JasonData, "status", NODE_OFF_LINE);
+		if(pu8Data[i] == TYPE_GATE_NODE || pu8Data[i] == TYPE_INVALID_NODE)// 网关节点不需要上报
+		{
+			break;
+		}
+		
+		JasonData = cJSON_CreateObject();
+		if(JasonData == T_NULL)
+		{
+			return RET_FAILED;
+		}
+
+		cJSON_AddNumberToObject(JasonData, "type", TYPE_DEV);  //0:设备 1:网关
+		sprintf(s8DevSubId, "%d", pu8Data[i]);
+		strcpy(s8MuId, GTW_SN);
+		strcat(s8MuId, ":");
+		strcat(s8MuId, (const char *)s8DevSubId);
+		cJSON_AddStringToObject(JasonData, "muId", s8MuId);
+		
+		if(pu8Data[i+1] != 0)
+		{
+			cJSON_AddNumberToObject(JasonData, "status", NODE_ON_LINE);
+		}else
+		{
+			cJSON_AddNumberToObject(JasonData, "status", NODE_OFF_LINE);
+		}
+	
+		cJSON_AddNumberToObject(JasonData, "moveCount", pu8Data[i+3]); // 0:正常，1:离线，2:在线，3:未初始化（未绑定用户），4:电池低于10%，5:被挪动',
+		
+		cJSON_AddNumberToObject(JasonData, "battery", pu8Data[i+2]);
+		
+		ps8JsonFormatData = cJSON_PrintUnformatted(JasonData);
+
+		strncpy(&s8RepData[u8TxLen], ps8JsonFormatData, strlen(ps8JsonFormatData));
+		strcat(s8RepData, "\r\n");
+		u8TxLen = strlen(s8RepData);
+		
+		cJSON_Delete(JasonData);
+		JasonData = T_NULL;
+		free(ps8JsonFormatData);
+		ps8JsonFormatData = T_NULL;
+	
 	}
-	
 
-	cJSON_AddNumberToObject(JasonData, "moveCount", ps8Data[3]); // 0:正常，1:离线，2:在线，3:未初始化（未绑定用户），4:电池低于10%，5:被挪动',
-	
-	ps8JsonFormatData = cJSON_PrintUnformatted(JasonData);
-	strcpy(s8RepData, ps8JsonFormatData);
-	strcat(s8RepData, "\r\n");
-
-	MDL_DRIVERMGR_Write(pstAllHandle->s32GprsModuleId, s8RepData, strlen(s8RepData));
-
-	cJSON_Delete(JasonData);
-	free(ps8JsonFormatData);
-
-	ps8JsonFormatData = T_NULL;
-	JasonData = T_NULL;
-
+	if(strlen(s8RepData) > 0)
+	{
+		MDL_DRIVERMGR_Write(pstAllHandle->s32GprsModuleId, s8RepData, strlen(s8RepData));
+	}
+		
 	return RET_SUCCESS;	
 }
 
 //获取所有网络节点数据
-static T_S32 BleMeshGetAllNode(AllHandle *pstAllHandle)
+T_S32 BleMeshGetAllNode(AllHandle *pstAllHandle)
 {
 	T_S8 s8TxToMeshData[12] = {0};
 	T_U8 u8TxLen =0;
@@ -170,10 +188,10 @@ static T_S32 BleMeshGetAllNode(AllHandle *pstAllHandle)
 T_VOID ALL_BleMeshHandle(AllHandle *pstAllHandle, T_S8 *ps8InData,  T_U8 u8InLen)
 {
 	T_U8 u8Cmd = 0;
-	T_U8 u8DataBuf[64] = {0};
-	T_U8 u8DataLen =0;
+	T_U8 u8DataBuf[256] = {0};
+	T_U16 u16DataLen =0;
 	
-	BleMeshPrasePacketHandle((T_U8 *)ps8InData, u8InLen, &u8Cmd, u8DataBuf, &u8DataLen);
+	BleMeshPrasePacketHandle((T_U8 *)ps8InData, u8InLen, &u8Cmd, u8DataBuf, &u16DataLen);
 
 	switch(u8Cmd)
 	{
@@ -192,7 +210,8 @@ T_VOID ALL_BleMeshHandle(AllHandle *pstAllHandle, T_S8 *ps8InData,  T_U8 u8InLen
 
 		case MESH_ONLINE_ACK_CMD:  //在线更新状态
 		{
-			BleMeshNodeStatusReport(pstAllHandle, (char *)u8DataBuf, u8DataLen);
+			BleMeshNodeStatusReport(pstAllHandle, u8DataBuf, u16DataLen);
+			
 		}break;
 
 		default:break;
@@ -214,7 +233,6 @@ T_VOID ALL_BleMeshTxHeartbeat(T_VOID *pvAllHandle)
 	MDL_DRIVERMGR_Write(pstAllHandle->s32BleMeshModuleId, s8TxToMeshData, u8TxLen);
 }
 
-
 T_VOID ALL_BleMeshHeartbeatTimeout(T_VOID *pvAllHandle)
 {
 	T_U8 u8TxLen =0;
@@ -224,7 +242,9 @@ T_VOID ALL_BleMeshHeartbeatTimeout(T_VOID *pvAllHandle)
 	T_S8 *ps8JsonFormatData = T_NULL;
 	T_S8 s8RepData[64] = {0};
 	T_U8 u8GprsWorkMode = 0;
-
+	
+	BleMeshGetAllNode(pstAllHandle);
+	
 	MDL_DRIVERMGR_Ioctl(pstAllHandle->s32GprsModuleId, GPS_GET_WORK_MODE, (T_VOID *)&u8GprsWorkMode);
 
 	if(u8GprsWorkMode != GPS_DATA_MODE)
@@ -253,6 +273,23 @@ T_VOID ALL_BleMeshHeartbeatTimeout(T_VOID *pvAllHandle)
 	MDL_DRIVERMGR_Write(pstAllHandle->s32GprsModuleId, s8RepData, u8TxLen);
 	free(ps8JsonFormatData);
 	ps8JsonFormatData = T_NULL;
+
+	
+}
+
+T_VOID ALL_BleMeshCheckAllNodeStatus(T_VOID *pvAllHandle)
+{
+	T_U8 u8GprsWorkMode = 0;
+	AllHandle *pstAllHandle = (AllHandle *)pvAllHandle;
+	
+	MDL_DRIVERMGR_Ioctl(pstAllHandle->s32GprsModuleId, GPS_GET_WORK_MODE, (T_VOID *)&u8GprsWorkMode);
+
+	if(u8GprsWorkMode != GPS_DATA_MODE)
+	{
+		return;
+	}
+
+	BleMeshGetAllNode(pstAllHandle);
 }
 
 

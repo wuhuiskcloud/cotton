@@ -43,6 +43,9 @@
 #define NODE_ON_LINE 0
 #define NODE_ALL_OFF_LINE 5
 
+#define TYPE_GATE_NODE  250  //网关节点子ID
+#define TYPE_INVALID_NODE   0  //0 表示无效ID
+
 typedef enum{
 	BLE_HEARTBEAT_RSP = 0x00,
 	BLE_NODE_STATE_RSP = 0x07,
@@ -85,6 +88,8 @@ enum {
 T_VOID ALL_BleMeshHandle(AllHandle *pstAllHandle, T_S8 *ps8InData,  T_U8 u8InLen);
 T_VOID ALL_BleMeshTxHeartbeat(T_VOID *pvAllHandle);
 T_VOID ALL_BleMeshHeartbeatTimeout(T_VOID *pvAllHandle);
+T_VOID ALL_BleMeshCheckAllNodeStatus(T_VOID *pvAllHandle);
+
 #ifdef __cplusplus
 }
 #endif //end __cplusplus

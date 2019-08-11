@@ -15,11 +15,16 @@
 #include "baseType.h"
 
 enum{
-	CMD_SERVER_HERAT = 0x54,
-	CMD_SERVER_DEV_STATUS = 0x50,
+	CMD_SERVER_LOCATION_ACK = 0x50,
+	CMD_SERVER_HERAT_ACK = 0x51,
+	CMD_SERVER_DEV_STATUS_ACK = 0x52,
+	CMD_SERVER_RQS_STATUS_ACK = 0x70,
 };
 
 T_VOID ALL_GprsServiceHandle(AllHandle *pstAllHandle, T_S8 *ps8InData);
+T_VOID ALL_GprsTxHeartbeat(T_VOID *pvData);
+T_VOID ALL_GprsRxHeartbeatTimeout(T_VOID *pvData);
+T_S32 BleMeshGetAllNode(AllHandle *pstAllHandle);
 
 #ifdef __cplusplus
 }

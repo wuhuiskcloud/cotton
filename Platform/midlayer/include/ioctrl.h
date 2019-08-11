@@ -42,6 +42,7 @@ enum{
 typedef enum {    
 	GPS_GET_WORK_MODE = 0x01,   //获取Gprs用户普通模式 
 	GPS_SET_DATA_MODE = 0x02,   //设置透传模式
+	GPS_RECONNERT_MODE = 0x03,
 }GpsCrtl;
 /*=======================普通GPIO控制================End*/
 

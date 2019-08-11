@@ -64,9 +64,11 @@
 //#define GPS_CONNET_SERVER   "AT+CIPSTART=\"TCP\",\"baidu.com\",80\r\n"   
 #define GPS_CONNET_SERVER   "AT+CIPSTART=\"TCP\",\"47.97.154.253\",4430\r\n"  
 //#define GPS_CONNET_SERVER   "AT+CIPSTART=\"TCP\",\"122.114.122.174\",39039\r\n"
+#define GPS_CLOSE           "at+cipclose\r\n"
 //查询TCP的连接状态
 #define GPS_TCP_STATUS      "AT+CIPSTATUS?\r\n"
 #define GPS_TCP_SEND        "at+cipsend="
+#define GPS_RSSI_REQ		"AT+CSQ=?\r\n"
 
 //透传参数设置
 #define GPS_DTU_PARA_REQ    "AT+CIPTCFG?\r\n"			//透传参数查询          
@@ -117,11 +119,13 @@ typedef enum
 	GPS_NOMAL_STEP,
 	GPS_NOMAL_WAIT_STEP,
 	GPS_TEST_STEP,
+	GPS_CLOSE_STEP,
     GPS_ATE0_STEP,  //设置关掉回显功能
     GPS_ATE1_STEP,  //开启回显
     GPS_DTU_REQ_STEP,
 	GPS_SIM_STEP, 
 	GPS_SIM_REGSTER_STEP,
+	GPS_RSSI_REQ_STEP,
 	GPS_DATA_RATE_STEP,
 	GPS_ON_STEP,
 	GPS_OFF_STEP,
@@ -318,7 +322,7 @@ static T_VOID Gps_TaskHandler(T_VOID *pvData)
 
 	DRIVER_IsUartData(USART2);
 	
-    if(DRIVER_UartRead(USART2, (char *)stRx.u8D, sizeof(stRx.u8D))>0)
+    if((stRx.u16Cnt = DRIVER_UartRead(USART2, (char *)stRx.u8D, sizeof(stRx.u8D)))>0)
 	{	
 		if(stCtl.u8InitStep == GPS_INIT_CHECK)
 		{
@@ -343,10 +347,20 @@ static T_VOID Gps_TaskHandler(T_VOID *pvData)
 				stCtl.u8Return = 0;
 				Gps_UartSendBuf((T_U8 *)GPS_TX_TEST, sizeof(GPS_TX_TEST)-1);
 				
-				stCtl.u8InitStep = GPS_CGATT_STEP; 
+				stCtl.u8InitStep = GPS_CGATT_STEP;
 			}
 			
 		}break;
+
+		case GPS_CLOSE_STEP:
+		{
+			if(stCtl.u8Return == 1)
+			{
+				Gps_UartSendBuf((T_U8 *)GPS_CLOSE, sizeof(GPS_CLOSE)-1);
+				stCtl.u8InitStep = GPS_CGATT_STEP; 
+			}
+		}
+		break;
 
         case GPS_ATE0_STEP:  //关闭AT指令回显功能
         {
@@ -438,8 +452,21 @@ static T_VOID Gps_TaskHandler(T_VOID *pvData)
             	stCtl.u8Return = 0;
                 Gps_UartSendBuf((T_U8 *)GPS_SIM_CREG, sizeof(GPS_SIM_CREG)-1);
                
-                stCtl.u8InitStep = GPS_CGATT_STEP; 
+                //stCtl.u8InitStep = GPS_CGATT_STEP; 
+                stCtl.u8InitStep = GPS_RSSI_REQ_STEP; 
             }
+        }break;
+
+        case GPS_RSSI_REQ_STEP:
+        {
+        	if(1== stCtl.u8Return)
+        	{
+				stCtl.u8Return = 0;
+
+				Gps_UartSendBuf((T_U8 *)GPS_RSSI_REQ, sizeof(GPS_RSSI_REQ)-1);
+               
+                stCtl.u8InitStep = GPS_CGATT_STEP;
+        	}
         }break;
         
         case GPS_CGATT_STEP:
@@ -452,7 +479,9 @@ static T_VOID Gps_TaskHandler(T_VOID *pvData)
                 stCtl.u8InitStep = GPS_CGDCONT_STEP; 
             }
         }break;
-        
+
+      
+		        
         case GPS_CGDCONT_STEP:
         {
             if(1== stCtl.u8Return)
@@ -600,7 +629,7 @@ static T_VOID Gps_TaskHandler(T_VOID *pvData)
 		{
 			stCtl.u8Return = 1;
             
-		}if(T_NULL != strstr((const char *)stRx.u8D, "CONNECT OK"))
+		}if(T_NULL != strstr((const char *)stRx.u8D, "CONNECT OK")||T_NULL != strstr((const char *)stRx.u8D, "ALREAY CONNECT"))
 		{
 			u8Return = 1;
             
@@ -735,6 +764,14 @@ static T_S32 _Gps_Ioctl(T_S32 s32Cmd, T_VOID *pvData)
 			stCtl.u8SetStatus = 1;
     	}break;
 
+    	case GPS_RECONNERT_MODE:
+    	{
+			Gps_SetRevMode(GPS_USER_MODE);
+    		Gps_SetMode(GPS_TEST_STEP);
+    		MDL_TIME_Delay(2000); //和前一次发送的指令相隔两秒以后才能退出透传模式
+			Gps_UartSendBuf((T_U8 *)GPS_CMD_MODE, sizeof(GPS_CMD_MODE)-1);
+    	}
+
    		default:break;
     }
 	
@@ -753,6 +790,7 @@ static T_S32 _Gps_Ioctl(T_S32 s32Cmd, T_VOID *pvData)
 *********************************************/
 static T_S32 _Gps_Read(T_S8 *ps8DataBuf, T_S32 s32BufLen)
 {
+	T_S32 s32Len = 0;
 	ASSERT_EQUAL_RETVAL(ps8DataBuf, T_NULL, RET_FAILED);
 	ASSERT_EQUAL_RETVAL(s32BufLen, 0, RET_FAILED);
 	
@@ -763,14 +801,20 @@ static T_S32 _Gps_Read(T_S8 *ps8DataBuf, T_S32 s32BufLen)
 		if(s32BufLen > u8GpsReadLen)
 		{
 			memcpy(ps8DataBuf, u8GpsReadBuf, u8GpsReadLen);
-			
-			return u8GpsReadLen;
+			s32Len = u8GpsReadLen;
+			u8GpsReadLen =0;
+			return s32Len;
 		}else
 		{
 			memcpy(ps8DataBuf, u8GpsReadBuf, s32BufLen);
-			return s32BufLen;
+			s32Len = u8GpsReadLen;
+			u8GpsReadLen =0;
+			return s32Len;
+			
 		}
 	}
+
+	u8GpsReadLen = 0;
 	
 	return RET_FAILED;
 }

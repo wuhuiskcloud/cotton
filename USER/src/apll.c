@@ -145,76 +145,6 @@ T_VOID _TestTimer(T_VOID *pvData)
 	printf("Time is over\n");
 }
 
-T_VOID _GatewayHeartbeat(T_VOID *pvData)
-{
-	AllHandle *pstAllHandle = (AllHandle *)pvData;
-	T_S8 s8GatewayNo[24] = {0};
-	cJSON *pJsonRoot = T_NULL;
-	T_S8 *ps8HearData = T_NULL;
-	T_U8 u8GprsWorkMode = 0;
-	T_S8 s8GatewayData[512] = {0};
-	static T_U32 u32Battery = 0;
-//	T_S8 s8Bat[8] = {0};
-	static T_U8 u8StartupFlag = 0;
-	
-	ASSERT_EQUAL_RETURN(pstAllHandle, T_NULL);
-	
-	strcpy(s8GatewayNo, GTW_SN);
-	strcat(s8GatewayNo, ":");
-	strcat(s8GatewayNo, "NW");
-
-	MDL_DRIVERMGR_Ioctl(pstAllHandle->s32GprsModuleId, GPS_GET_WORK_MODE, (T_VOID *)&u8GprsWorkMode);
-
-	if(u8GprsWorkMode != GPS_DATA_MODE)
-	{
-		return;
-	}
-	
-	pJsonRoot = cJSON_CreateObject();
-	
-	if(pJsonRoot == T_NULL)
-	{
-		return;
-	}
-	
-	cJSON_AddNumberToObject(pJsonRoot, "type", TYPE_GW);
-	cJSON_AddStringToObject(pJsonRoot, "muId", s8GatewayNo);
-	
-	if(u8StartupFlag == 0)
-	{
-		u8StartupFlag = 1;
-		if(strlen(pstAllHandle->s8GatewayLocation) > 0)
-		{
-			cJSON_AddStringToObject(pJsonRoot, "location", pstAllHandle->s8GatewayLocation);
-		}else
-		{
-			cJSON_AddStringToObject(pJsonRoot, "location", "0");
-		}
-	}else
-	{
-		u32Battery++;
-		u32Battery= u32Battery%100;
-		//u32Battery = u32Battery%0x7fffff;
-		//sprintf(s8Bat, "%d", u32Battery);
-		cJSON_AddNumberToObject(pJsonRoot, "battery", u32Battery);
-	}
-	
-
-	ps8HearData=cJSON_PrintUnformatted(pJsonRoot);
-
-	strcpy(s8GatewayData, ps8HearData);
-	strcat(s8GatewayData,"\r\n");
-	printf("json baddy %s len %d\n",s8GatewayData,strlen(s8GatewayData));
-	MDL_DRIVERMGR_Write(pstAllHandle->s32GprsModuleId, s8GatewayData, strlen(s8GatewayData));
-
-	free(ps8HearData);
-	ps8HearData = T_NULL;
-	
-	cJSON_Delete(pJsonRoot);
-	pJsonRoot = T_NULL;
-}
-
-
 /********************************************
  *功能：上层应用逻辑层初始化接口
  *输入：应用逻辑层handle
@@ -264,16 +194,22 @@ T_S32 ALL_Init(T_VOID **ppvAllHandle)
 	pstAllHandle->u8SysTate = SYSTEM_STATE_INIT;
 
 	
-	MDL_TIMER_Add(&pstAllHandle->stTimerHead, TEST_TIMER_TOK, 0, _TestTimer, T_NULL, pstAllHandle);
-	MDL_TIMER_Start(&pstAllHandle->stTimerHead, TEST_TIMER_TOK, START_4G_TIME);
+	//MDL_TIMER_Add(&pstAllHandle->stTimerHead, TEST_TIMER_TOK, 0, _TestTimer, T_NULL, pstAllHandle);
+	//MDL_TIMER_Start(&pstAllHandle->stTimerHead, TEST_TIMER_TOK, START_4G_TIME);
 
 	MDL_TIMER_Add(&pstAllHandle->stTimerHead, MESHHEART_TX_TIMER_TOK, 0, ALL_BleMeshTxHeartbeat, T_NULL, pstAllHandle);
 	MDL_TIMER_Start(&pstAllHandle->stTimerHead, MESHHEART_TX_TIMER_TOK, MESH_TX_HEART_TIME);
 
 	MDL_TIMER_Add(&pstAllHandle->stTimerHead, MESHHEART_RX_TIMER_TOK, 0, ALL_BleMeshHeartbeatTimeout, T_NULL, pstAllHandle);
 
-	MDL_TIMER_Add(&pstAllHandle->stTimerHead, GATEWAY_TX_TIMER_TOK, 0, _GatewayHeartbeat, T_NULL, pstAllHandle);
+	MDL_TIMER_Add(&pstAllHandle->stTimerHead, GATEWAY_TX_TIMER_TOK, 0, ALL_GprsTxHeartbeat, T_NULL, pstAllHandle);
 	MDL_TIMER_Start(&pstAllHandle->stTimerHead, GATEWAY_TX_TIMER_TOK, GATEWAY_TX_HEART_TIME);
+
+	//MDL_TIMER_Add(&pstAllHandle->stTimerHead, CHECK_NODE_STATUS_TIMER_TOK, 0, ALL_BleMeshCheckAllNodeStatus, T_NULL, pstAllHandle);
+	//MDL_TIMER_Start(&pstAllHandle->stTimerHead, CHECK_NODE_STATUS_TIMER_TOK, CHECK_NODE_STATUS_TIME);
+	
+	
+	MDL_TIMER_Add(&pstAllHandle->stTimerHead, GATEWAY_RX_TIMER_TOK, 0, ALL_GprsRxHeartbeatTimeout, T_NULL, pstAllHandle);
 
 	*ppvAllHandle = pstAllHandle;
 	print_debug("system start \n");

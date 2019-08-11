@@ -1,5 +1,5 @@
 /*********************************************
-* @文件:global.h
+* @文件: global.h
 * @作者: wuhuiskt
 * @版本: v1.0.1
 * @时间: 2019-6-1
@@ -27,14 +27,21 @@
 #define RESET_4G_TIME 100
 #define START_4G_TIME 1000
 
-#define MESH_TX_HEART_TIME 10000
-#define MESH_RX_HEART_TIME 13000
+#define MESH_TX_HEART_TIME 10000  //10秒主动给协调器一个包
+#define MESH_RX_HEART_TIME 30000  //3个包未收到则报异常
+
 #define GATEWAY_TX_HEART_TIME 15000
+#define GATEWAY_RX_HEART_TIME 80000
+
+#define CHECK_NODE_STATUS_TIME (18*1000)//(1000*60*3+5000) //3分5秒
 
 #define TEST_TIMER_TOK 1
 #define MESHHEART_TX_TIMER_TOK 2
 #define MESHHEART_RX_TIMER_TOK 3
 #define GATEWAY_TX_TIMER_TOK 4
+#define CHECK_NODE_STATUS_TIMER_TOK 5
+#define GATEWAY_RX_TIMER_TOK 6
+
 
 
 #define GTW_SN 		"JP010002"
